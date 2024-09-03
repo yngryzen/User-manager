@@ -106,8 +106,8 @@ if accountcheck == "2":
 else: # Login
     ok = False
     while not ok:
-        email = input("What is your email? | ")
-        password = getpass.getpass("What is your password? | ")
+        email = input("What is your email?\n>")
+        password = getpass.getpass("What is your password?\n>")
         sql = '''SELECT password, first_name, last_name, email, age
                  FROM users
                  WHERE email = ?'''
@@ -120,33 +120,56 @@ else: # Login
                 lastname = row[2]
                 loggedemail = row[3]
                 age = row[4]
-                if bcrypt.checkpw(password.encode(encoding="utf-8"), hashedpassword):
-                    if loggedemail == email:
-                        print()
-                    else:
-                        print("Wrong email or password.")
+                if bcrypt.checkpw(password.encode(encoding="utf-8"), hashedpassword): 
                     print("Logged in successfully")
                     ok = True
                 else:
-                    print("Wrong email or password")
+                    print("Wrong email or password\n...")
+                    time.sleep(2)
+            else:
+                print("Wrong email or password\n...")
+                time.sleep(2)
         except sqlite3.Error as e:
             print(e)
 #--------------------------------------------------------------------------- Main Menu ---------------------------------------------------------------------------
     menu = True
     while menu == True:
-        print(f"Welcome back, {firstname} {lastname}!\n1] Info\n2] My friends\n3] My Posts\n4] Log out")
+        time.sleep(2)
+        print(f"\nWelcome back, {firstname} {lastname}!")
+        time.sleep(1)
+        print("1] Info")
+        time.sleep(0.2)
+        print("2] My friends")
+        time.sleep(0.2)
+        print("3] My posts")
+        time.sleep(0.2)
+        print("4] Quit")
         selection = input(">")
         if selection == "1":
+            time.sleep(0.8)
+            print("\nAccount Information")
+            time.sleep(0.25)
             print(f"First name: {firstname}")
+            time.sleep(0.2)
             print(f"Last name: {lastname}")
+            time.sleep(0.2)
             print(f"Email: {loggedemail}")
+            time.sleep(0.2)
             print(f"Age: {age}")
-            menu = False
+            time.sleep(0.2)
+            print("Returning to main menu...")
         if selection == "2":
-            print("No friends found.")
-            menu = False
+            time.sleep(0.8)
+            print("\nFriends list")
+            print("No friends found.\nReturning to main menu...")
         if selection == "3":
-            print("Yet to make any posts.")
-            menu = False
+            time.sleep(0.8)
+            print("\nYet to make any posts.\nReturning to main menu...")
         if selection == "4":
-            exit()
+            time.sleep(0.8)
+            print("\nSee you later.")
+            menu = False
+        if selection == "":
+            print("\nSomething went wrong. \nReloading...")
+        if selection.isalpha():
+            print("\nMust be a number. \nReloading...")
