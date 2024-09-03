@@ -1,6 +1,7 @@
 import sqlite3
 import getpass
 import bcrypt
+import time
 
 con = sqlite3.connect("database.db")
 cur = con.cursor()
@@ -18,7 +19,7 @@ userstablequery = """CREATE TABLE IF NOT EXISTS "users" (
 
 cur.execute(userstablequery)
 
-accountcheck = input("Type [1] for login, type [2] for registration.")
+accountcheck = input("Type [1] for login, type [2] for registration.\n>")
 if accountcheck == "2":
         # Validate username
 
@@ -107,7 +108,7 @@ else: # Login
     while not ok:
         email = input("What is your email? | ")
         password = getpass.getpass("What is your password? | ")
-        sql = '''SELECT password, first_name, last_name
+        sql = '''SELECT password, first_name, last_name, email, age
                  FROM users
                  WHERE email = ?'''
         try:
@@ -117,25 +118,35 @@ else: # Login
                 hashedpassword = row[0]
                 firstname = row[1]
                 lastname = row[2]
+                loggedemail = row[3]
+                age = row[4]
                 if bcrypt.checkpw(password.encode(encoding="utf-8"), hashedpassword):
+                    if loggedemail == email:
+                        print()
+                    else:
+                        print("Wrong email or password.")
                     print("Logged in successfully")
                     ok = True
                 else:
                     print("Wrong email or password")
         except sqlite3.Error as e:
             print(e)
-            
-    print(f"Welcome back, {firstname} {lastname}!\n1] Info\n2] My friends\n3] My Posts\n4] Log out")
-    selection = input(">")
-    if selection == "1":
-        print(f"Password: {password}")
-        print(f"First name: {firstname}")
-        print(f"Last name: {lastname}")
-    if selection == "2":
-        print("You have no friends.")
-    if selection == "3":
-        print("Yet to make any posts.")
-    if selection == "4":
-        quit()
-    else:
-        print("Something went wrong on our side, Sorry about that!")
+#--------------------------------------------------------------------------- Main Menu ---------------------------------------------------------------------------
+    menu = True
+    while menu == True:
+        print(f"Welcome back, {firstname} {lastname}!\n1] Info\n2] My friends\n3] My Posts\n4] Log out")
+        selection = input(">")
+        if selection == "1":
+            print(f"First name: {firstname}")
+            print(f"Last name: {lastname}")
+            print(f"Email: {loggedemail}")
+            print(f"Age: {age}")
+            menu = False
+        if selection == "2":
+            print("No friends found.")
+            menu = False
+        if selection == "3":
+            print("Yet to make any posts.")
+            menu = False
+        if selection == "4":
+            exit()
