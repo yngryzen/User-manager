@@ -88,21 +88,25 @@ if accountcheck == "2":
             ok = True
         else:
             print("Age is invalid")
-    print("Everything is ok.")
+    time.sleep(0.1)
+    print("Checking...")
 
     sql = ''' INSERT INTO users(username, password, email, first_name, last_name, age)
             VALUES (?, ?, ?, ?, ?, ?) '''
 
-    cur.execute(sql, (
-        username,
-        hashedpassword,
-        email,
-        firstname,
-        lastname,
-        age
-    ))
-    con.commit()
-    print("Account created")
+    try:
+        cur.execute(sql, (
+            username,
+            hashedpassword,
+            email,
+            firstname,
+            lastname,
+            age
+        ))
+        con.commit()
+        print("Account created")
+    except sqlite3.Error:
+        print("Something went wrong.")
 else: # Login
     ok = False
     while not ok:
